@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#15131c" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>ストレッチタイマー v0.3.2</title>
+<title>ストレッチタイマー v0.3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
@@ -76,12 +76,12 @@
     position: relative;
   }
 
-  /* ヘッダ：brand / 音量 / version の3カラム1行 */
+  /* ヘッダ */
   header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 18px;
+    justify-content: space-between;
+    margin-bottom: 14px;
   }
   .brand {
     font-family: 'Fraunces', serif;
@@ -89,8 +89,6 @@
     font-size: 18px;
     letter-spacing: 0.04em;
     color: var(--text);
-    flex-shrink: 0;
-    white-space: nowrap;
   }
   .brand b {
     font-weight: 500;
@@ -102,75 +100,6 @@
     font-size: 11px;
     color: var(--text-faint);
     letter-spacing: 0.06em;
-    flex-shrink: 0;
-  }
-
-  /* 音量コントロール（ヘッダ内インライン版） */
-  .volume-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-soft);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 999px;
-    padding: 6px 12px 6px 10px;
-    flex: 1;
-    min-width: 0; /* flex子要素が縮めるように */
-  }
-  .volume-row .vol-icon {
-    width: 14px;
-    height: 14px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-    transition: color 0.2s ease;
-  }
-  .volume-row[data-muted="true"] .vol-icon {
-    color: var(--text-faint);
-  }
-  .volume-row .vol-slider {
-    flex: 1;
-    min-width: 0;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 999px;
-    outline: none;
-    margin: 0;
-    cursor: pointer;
-    background-image: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--vol-pct, 50%), rgba(255,255,255,0.06) var(--vol-pct, 50%), rgba(255,255,255,0.06) 100%);
-    transition: background-image 0.2s ease;
-  }
-  .volume-row .vol-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--text);
-    border: 2px solid var(--accent);
-    box-shadow: 0 2px 8px var(--accent-glow);
-    cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-  }
-  .volume-row .vol-slider::-webkit-slider-thumb:active { transform: scale(1.15); }
-  .volume-row .vol-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--text);
-    border: 2px solid var(--accent);
-    box-shadow: 0 2px 8px var(--accent-glow);
-    cursor: pointer;
-  }
-  .volume-row .vol-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    min-width: 20px;
-    text-align: right;
-    font-weight: 500;
-    flex-shrink: 0;
   }
 
   /* プリセット */
@@ -295,7 +224,7 @@
   /* リングと時間表示 */
   .ring-wrap {
     position: relative;
-    width: min(74vw, 320px);
+    width: min(78vw, 340px);
     aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
@@ -413,13 +342,9 @@
     .preset { padding: 12px 6px 10px; }
     .preset .t-main { font-size: 28px; }
     .preset .t-interval { font-size: 18px; }
-    header { gap: 8px; }
-    .brand { font-size: 16px; }
-    .version { font-size: 10px; }
-    .volume-row { padding: 5px 10px 5px 8px; gap: 6px; }
   }
   @media (min-height: 800px) {
-    .ring-wrap { width: min(74vw, 380px); }
+    .ring-wrap { width: min(78vw, 400px); }
   }
 </style>
 </head>
@@ -427,14 +352,7 @@
   <div class="app">
     <header>
       <div class="brand">Stretch <b>Timer</b></div>
-      <div class="volume-row" id="volumeRow" aria-label="音量">
-        <svg class="vol-icon" id="volIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 14 18.7v2.06A9 9 0 0 0 14 3.23z"/>
-        </svg>
-        <input type="range" id="volumeSlider" class="vol-slider" min="0" max="100" step="1" value="50" aria-label="音量調節" />
-        <span class="vol-val" id="volumeValue">50</span>
-      </div>
-      <div class="version">v0.3.2</div>
+      <div class="version">v0.3.0</div>
     </header>
 
     <section class="presets" aria-label="プリセット選択">
@@ -447,21 +365,21 @@
         </div>
         <div class="preset-meta">M / I</div>
       </button>
-      <button class="preset" data-main="20" data-interval="4">
+      <button class="preset" data-main="20" data-interval="3">
         <div class="preset-label">QUICK</div>
         <div class="preset-times">
           <span class="t-main">20</span><span class="t-unit">s</span>
           <span class="t-sep">/</span>
-          <span class="t-interval">4</span><span class="t-unit">s</span>
+          <span class="t-interval">3</span><span class="t-unit">s</span>
         </div>
         <div class="preset-meta">M / I</div>
       </button>
-      <button class="preset" data-main="10" data-interval="4">
+      <button class="preset" data-main="10" data-interval="3">
         <div class="preset-label">SHORT</div>
         <div class="preset-times">
           <span class="t-main">10</span><span class="t-unit">s</span>
           <span class="t-sep">/</span>
-          <span class="t-interval">4</span><span class="t-unit">s</span>
+          <span class="t-interval">3</span><span class="t-unit">s</span>
         </div>
         <div class="preset-meta">M / I</div>
       </button>
@@ -500,31 +418,30 @@
 
 <script>
 /* ============================================================
-   ストレッチタイマー v0.3.2
-   - v0.3.1からの変更：
-     * ヘッダレイアウト変更
-       - 「Stretch Timer」タイトル / 音量バー / バージョン番号を
-         同じ1行に統合（3カラム flex 構成）
-       - 音量バーは中央でflex:1により可動幅を確保
-       - スマホ幅(<=380px)でも1行を維持するためアイコン/数値を小型化
-     * 機能・効果音・タイマー挙動はv0.3.1と同一
+   ストレッチタイマー v0.3.0
+   - v0.2.1からの変更：
+     * ブランド名 Stretch Tempo → Stretch Timer（イタリック解除）
+     * メイン/インターバル時間を3種プリセット（30/5, 20/3, 10/3）の
+       ワンタップ切替に変更。手動入力欄は削除。
+     * 準備カウント秒（PREP）= インターバル秒。プリセットに連動。
+     * ヒント文「最初に○秒のカウントが入ります」もプリセット連動。
+   - 既存機能はすべて維持：
+     * Web Audio APIによる効果音合成（メイン/インターバル聞き分け）
+     * performance.now()ベースの精密タイマー
+     * メイン→インターバル間の1秒の間
+     * 一時停止/再開、停止、wake lock、キーボード操作
    ============================================================ */
 
 /* ---------- 設定 ---------- */
 const CONFIG = {
-  COUNTDOWN_FROM: 3,           // 終了X秒前からカウント音
-  TRANSITION_GAP_MS: 1000,     // メイン→インターバル間の間
+  COUNTDOWN_FROM: 3, // 終了X秒前からカウント音
+  TRANSITION_GAP_MS: 1000, // メイン→インターバル間の間
   PRESETS: [
     { name: 'STANDARD', main: 30, interval: 5 },
-    { name: 'QUICK',    main: 20, interval: 4 }, // v0.3.1: 3→4
-    { name: 'SHORT',    main: 10, interval: 4 }, // v0.3.1: 3→4
+    { name: 'QUICK',    main: 20, interval: 3 },
+    { name: 'SHORT',    main: 10, interval: 3 },
   ],
   DEFAULT_PRESET_INDEX: 0,
-  // 音量関連
-  VOLUME_DEFAULT: 50,           // スライダー初期値(0-100)
-  VOLUME_GAIN_AT_MAX: 1.4,      // slider=100 のときのmasterGain値
-                                // 50 → 0.7 (旧バージョンと等価)
-  VOLUME_STORAGE_KEY: 'stretchTimer.volume',
 };
 
 /* ---------- DOM ---------- */
@@ -541,10 +458,6 @@ const el = {
   playLabel: document.getElementById('playLabel'),
   stopBtn: document.getElementById('stopBtn'),
   hint: document.getElementById('hint'),
-  volumeRow: document.getElementById('volumeRow'),
-  volumeSlider: document.getElementById('volumeSlider'),
-  volumeValue: document.getElementById('volumeValue'),
-  volIcon: document.getElementById('volIcon'),
 };
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 94;
@@ -574,17 +487,10 @@ let transitionTimerId = null;
 let currentPresetIndex = CONFIG.DEFAULT_PRESET_INDEX;
 function getMainSec()     { return CONFIG.PRESETS[currentPresetIndex].main; }
 function getIntervalSec() { return CONFIG.PRESETS[currentPresetIndex].interval; }
-function getPrepSec()     { return CONFIG.PRESETS[currentPresetIndex].interval; }
-
-// 音量(0-100)
-let volumeLevel = CONFIG.VOLUME_DEFAULT;
+function getPrepSec()     { return CONFIG.PRESETS[currentPresetIndex].interval; } // ★ 準備=インターバル
 
 /* ============================================================
-   オーディオエンジン
-   - メイン  = 高音域(1000-2600Hz)、明るい金属/ベル系
-   - インターバル = 低音域(100-330Hz)、ローパスの温かいパッド系
-   - v0.3.1: intervalTickのgainを1.4倍に増強
-   - masterGain値はsetMasterGain()で随時更新可能
+   オーディオエンジン（v0.2.1から変更なし）
    ============================================================ */
 const Audio = (() => {
   let ctx = null;
@@ -594,18 +500,11 @@ const Audio = (() => {
     if (!ctx) {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       masterGain = ctx.createGain();
-      masterGain.gain.value = volumeToGain(volumeLevel);
+      masterGain.gain.value = 0.7;
       masterGain.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
-  }
-
-  function setMasterGain(g) {
-    if (!ctx) return; // まだ初期化されていない場合は何もしない（初期化時に最新値で立ち上がる）
-    // 急激な変化を避けてクリックノイズを防ぐ
-    masterGain.gain.cancelScheduledValues(ctx.currentTime);
-    masterGain.gain.setTargetAtTime(g, ctx.currentTime, 0.02);
   }
 
   function tone({ freq, type = 'sine', dur = 0.4, attack = 0.005, gain = 0.3, detune = 0, dest = null }) {
@@ -634,7 +533,6 @@ const Audio = (() => {
     tone({ ...opts, dest: filter });
   }
 
-  // ---------- MAIN（メイン）系：高音・明るい・覚醒 ----------
   function mainStart() {
     ensure();
     const notes = [1046.5, 1318.5, 1568.0]; // C6, E6, G6
@@ -659,25 +557,22 @@ const Audio = (() => {
     tone({ freq: 2093.0, type: 'sine',     dur: 0.90, attack: 0.010, gain: 0.08 });
   }
 
-  // ---------- INTERVAL（インターバル）系：低音・温かい・休息 ----------
   function intervalStart() {
     softTone({ freq: 110,    type: 'sine',     dur: 1.10, attack: 0.10, gain: 0.20, cutoff: 600 });
     softTone({ freq: 220,    type: 'sine',     dur: 1.20, attack: 0.15, gain: 0.30, cutoff: 700 });
     softTone({ freq: 329.63, type: 'triangle', dur: 1.10, attack: 0.20, gain: 0.16, cutoff: 700 });
   }
 
-  // v0.3.1: gainを1.4倍に増強（0.28→0.392, 0.20→0.28）
-  // ローパスで丸められて聞き取りづらかったため、知覚音量を引き上げる
   function intervalTick() {
-    softTone({ freq: 196, type: 'sine',     dur: 0.18, attack: 0.002, gain: 0.392, cutoff: 500 });
-    softTone({ freq: 98,  type: 'triangle', dur: 0.20, attack: 0.003, gain: 0.280, cutoff: 350 });
+    softTone({ freq: 196, type: 'sine',     dur: 0.18, attack: 0.002, gain: 0.28, cutoff: 500 });
+    softTone({ freq: 98,  type: 'triangle', dur: 0.20, attack: 0.003, gain: 0.20, cutoff: 350 });
   }
 
   function prepTick() {
     tone({ freq: 660, type: 'sine', dur: 0.14, attack: 0.003, gain: 0.20 });
   }
 
-  return { ensure, setMasterGain, mainStart, mainEnd, mainTick, intervalStart, intervalTick, prepTick };
+  return { ensure, mainStart, mainEnd, mainTick, intervalStart, intervalTick, prepTick };
 })();
 
 /* ============================================================
@@ -695,62 +590,6 @@ function getIdleHint() {
   return `▶ ボタンで開始。最初に${getPrepSec()}秒のカウントが入ります`;
 }
 
-/* 音量(0-100) → AudioContextのgain値(0〜VOLUME_GAIN_AT_MAX)に変換 */
-function volumeToGain(v) {
-  const clamped = clamp(v, 0, 100);
-  return (clamped / 100) * CONFIG.VOLUME_GAIN_AT_MAX;
-}
-
-/* ============================================================
-   音量制御
-   ============================================================ */
-function loadVolumeFromStorage() {
-  try {
-    const raw = localStorage.getItem(CONFIG.VOLUME_STORAGE_KEY);
-    if (raw === null) return CONFIG.VOLUME_DEFAULT;
-    const v = parseInt(raw, 10);
-    return Number.isFinite(v) ? clamp(v, 0, 100) : CONFIG.VOLUME_DEFAULT;
-  } catch (_) {
-    return CONFIG.VOLUME_DEFAULT;
-  }
-}
-
-function saveVolumeToStorage(v) {
-  try { localStorage.setItem(CONFIG.VOLUME_STORAGE_KEY, String(v)); } catch (_) { /* noop */ }
-}
-
-function setVolume(v, { save = true } = {}) {
-  volumeLevel = clamp(parseInt(v, 10) || 0, 0, 100);
-  el.volumeSlider.value = String(volumeLevel);
-  el.volumeValue.textContent = String(volumeLevel);
-  el.volumeSlider.style.setProperty('--vol-pct', `${volumeLevel}%`);
-  el.volumeRow.setAttribute('data-muted', volumeLevel === 0 ? 'true' : 'false');
-  // アイコンを音量に応じて切り替え
-  updateVolumeIcon(volumeLevel);
-  Audio.setMasterGain(volumeToGain(volumeLevel));
-  if (save) saveVolumeToStorage(volumeLevel);
-}
-
-function updateVolumeIcon(v) {
-  // 0: ミュート、1-33: 小、34-66: 中、67-100: 大
-  let path;
-  if (v === 0) {
-    // ミュートアイコン
-    path = 'M3 9v6h4l5 5V4L7 9H3zm13.59 3L19 9.41 17.59 8 15 10.59 12.41 8 11 9.41 13.59 12 11 14.59 12.41 16 15 13.41 17.59 16 19 14.59 16.59 12z';
-  } else if (v <= 33) {
-    path = 'M3 9v6h4l5 5V4L7 9H3z';
-  } else if (v <= 66) {
-    path = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z';
-  } else {
-    path = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 14 18.7v2.06A9 9 0 0 0 14 3.23z';
-  }
-  el.volIcon.innerHTML = `<path d="${path}"/>`;
-}
-
-el.volumeSlider.addEventListener('input', (e) => {
-  setVolume(e.target.value);
-});
-
 /* ============================================================
    プリセット選択
    ============================================================ */
@@ -764,7 +603,11 @@ function selectPreset(index) {
 }
 
 el.presets.forEach((p, i) => {
-  p.addEventListener('click', () => selectPreset(i));
+  p.addEventListener('click', () => {
+    // 動作中のプリセット切替も許容するが、現フェーズの残り時間には影響しない
+    // （次のフェーズから新しいプリセット値で動く）
+    selectPreset(i);
+  });
 });
 
 /* ============================================================
@@ -827,7 +670,7 @@ function startPhase(nextState) {
   setAccent(state);
 
   if (state === State.PREP) {
-    phaseDuration = getPrepSec();
+    phaseDuration = getPrepSec(); // ★ インターバル秒と同じ
     el.hint.textContent = 'まもなくスタート…';
   } else if (state === State.MAIN) {
     phaseDuration = getMainSec();
@@ -905,9 +748,6 @@ function tick(now) {
    ============================================================ */
 function play() {
   Audio.ensure();
-  // ensure後にmasterGainがある場合は現在値を反映（初期化直後の同期）
-  Audio.setMasterGain(volumeToGain(volumeLevel));
-
   if (state === State.IDLE) {
     cycleCount = 0;
     totalElapsedSec = 0;
@@ -970,31 +810,16 @@ el.playBtn.addEventListener('click', play);
 el.stopBtn.addEventListener('click', stopAll);
 
 window.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') {
-    // 音量スライダーフォーカス中は↑↓で5刻み調整
-    if (e.target === el.volumeSlider) {
-      if (e.code === 'ArrowUp' || e.code === 'ArrowRight') {
-        e.preventDefault();
-        setVolume(volumeLevel + 5);
-      } else if (e.code === 'ArrowDown' || e.code === 'ArrowLeft') {
-        e.preventDefault();
-        setVolume(volumeLevel - 5);
-      }
-    }
-    return;
-  }
+  if (e.target.tagName === 'INPUT') return;
   if (e.code === 'Space') { e.preventDefault(); play(); }
   else if (e.code === 'Escape') { stopAll(); }
+  // 数字キー1-3でプリセット切替（おまけ機能）
   else if (e.code === 'Digit1' || e.code === 'Numpad1') selectPreset(0);
   else if (e.code === 'Digit2' || e.code === 'Numpad2') selectPreset(1);
   else if (e.code === 'Digit3' || e.code === 'Numpad3') selectPreset(2);
 });
 
-/* ============================================================
-   初期化
-   ============================================================ */
-volumeLevel = loadVolumeFromStorage();
-setVolume(volumeLevel, { save: false }); // UI反映のみ（保存はしない）
+// 初期表示
 selectPreset(CONFIG.DEFAULT_PRESET_INDEX);
 updateIdleDisplay();
 
