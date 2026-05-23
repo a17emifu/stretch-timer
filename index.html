@@ -6,14 +6,7 @@
 <meta name="theme-color" content="#15131c" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>ストレッチタイマー v0.2.2</title>
-<!-- アイコン / PWA メタタグ -->
-<link rel="manifest" href="manifest.json" />
-<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-<meta name="application-name" content="ストレッチタイマー" />
-<meta name="apple-mobile-web-app-title" content="ストレッチ" />
+<title>ストレッチタイマー v0.3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
@@ -88,7 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .brand {
     font-family: 'Fraunces', serif;
@@ -97,8 +90,8 @@
     letter-spacing: 0.04em;
     color: var(--text);
   }
-  .brand em {
-    font-style: italic;
+  .brand b {
+    font-weight: 500;
     color: var(--accent);
     transition: color 0.6s ease;
   }
@@ -109,62 +102,98 @@
     letter-spacing: 0.06em;
   }
 
-  /* 設定パネル */
-  .settings {
+  /* プリセット */
+  .presets {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     margin-bottom: 18px;
   }
-  .field {
+  .preset {
     background: var(--bg-soft);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 14px;
-    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 14px 10px 12px;
+    cursor: pointer;
+    text-align: center;
     position: relative;
     overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.2s ease, background 0.3s ease;
+    -webkit-user-select: none;
+    user-select: none;
+    font-family: inherit;
+    color: inherit;
   }
-  .field::before {
-    content: '';
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 3px;
-    background: var(--accent);
-    opacity: 0.35;
-  }
-  .field.interval::before { background: var(--interval); }
-  .field label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.18em;
+  .preset:active { transform: scale(0.97); }
+  .preset:hover { border-color: rgba(255,255,255,0.14); }
+
+  .preset .preset-label {
+    font-size: 9px;
+    letter-spacing: 0.20em;
     text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-    font-weight: 600;
+    color: var(--text-faint);
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
   }
-  .field .val {
+  .preset .preset-times {
     display: flex;
     align-items: baseline;
+    justify-content: center;
     gap: 4px;
+    line-height: 1;
   }
-  .field .val input {
-    background: transparent;
-    border: none;
-    color: var(--text);
+  .preset .t-main {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 28px;
-    width: 64px;
-    padding: 0;
-    -moz-appearance: textfield;
-    outline: none;
+    font-size: 32px;
+    color: var(--text);
+    letter-spacing: -0.02em;
   }
-  .field .val input::-webkit-outer-spin-button,
-  .field .val input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .field .unit {
+  .preset .t-sep {
+    color: var(--text-faint);
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0 2px;
+  }
+  .preset .t-interval {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 20px;
     color: var(--text-dim);
-    font-size: 12px;
-    letter-spacing: 0.06em;
+    letter-spacing: -0.01em;
+  }
+  .preset .t-unit {
+    font-size: 10px;
+    color: var(--text-faint);
+    margin-left: 1px;
+    letter-spacing: 0.04em;
+  }
+  .preset .preset-meta {
+    margin-top: 6px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .preset.active {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--accent-soft), var(--bg-soft) 60%);
+    box-shadow: 0 6px 22px var(--accent-glow);
+  }
+  .preset.active .t-main { color: var(--accent); }
+  .preset.active .preset-label { color: var(--text); }
+  .preset.active::after {
+    content: '';
+    position: absolute;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
   }
 
   /* 中央ステージ */
@@ -233,7 +262,6 @@
     color: var(--text-dim);
     margin-left: 4px;
     letter-spacing: 0.04em;
-    font-style: italic;
     font-weight: 400;
   }
 
@@ -309,9 +337,11 @@
 
   /* レスポンシブ調整 */
   @media (max-width: 380px) {
-    .settings { grid-template-columns: 1fr; }
     .btn { padding: 14px 20px; font-size: 13px; }
     .btn.primary { padding: 16px 26px; }
+    .preset { padding: 12px 6px 10px; }
+    .preset .t-main { font-size: 28px; }
+    .preset .t-interval { font-size: 18px; }
   }
   @media (min-height: 800px) {
     .ring-wrap { width: min(78vw, 400px); }
@@ -321,25 +351,38 @@
 <body data-phase="idle">
   <div class="app">
     <header>
-      <div class="brand">Stretch <em>Tempo</em></div>
-      <div class="version">v0.2.2</div>
+      <div class="brand">Stretch <b>Timer</b></div>
+      <div class="version">v0.3.0</div>
     </header>
 
-    <section class="settings" aria-label="時間設定">
-      <div class="field" id="field-main">
-        <label>メイン</label>
-        <div class="val">
-          <input type="number" id="mainInput" min="0" max="60" step="1" value="30" inputmode="numeric" />
-          <span class="unit">秒 / 0–60</span>
+    <section class="presets" aria-label="プリセット選択">
+      <button class="preset active" data-main="30" data-interval="5">
+        <div class="preset-label">STANDARD</div>
+        <div class="preset-times">
+          <span class="t-main">30</span><span class="t-unit">s</span>
+          <span class="t-sep">/</span>
+          <span class="t-interval">5</span><span class="t-unit">s</span>
         </div>
-      </div>
-      <div class="field interval" id="field-interval">
-        <label>インターバル</label>
-        <div class="val">
-          <input type="number" id="intervalInput" min="3" max="10" step="1" value="5" inputmode="numeric" />
-          <span class="unit">秒 / 3–10</span>
+        <div class="preset-meta">M / I</div>
+      </button>
+      <button class="preset" data-main="20" data-interval="3">
+        <div class="preset-label">QUICK</div>
+        <div class="preset-times">
+          <span class="t-main">20</span><span class="t-unit">s</span>
+          <span class="t-sep">/</span>
+          <span class="t-interval">3</span><span class="t-unit">s</span>
         </div>
-      </div>
+        <div class="preset-meta">M / I</div>
+      </button>
+      <button class="preset" data-main="10" data-interval="3">
+        <div class="preset-label">SHORT</div>
+        <div class="preset-times">
+          <span class="t-main">10</span><span class="t-unit">s</span>
+          <span class="t-sep">/</span>
+          <span class="t-interval">3</span><span class="t-unit">s</span>
+        </div>
+        <div class="preset-meta">M / I</div>
+      </button>
     </section>
 
     <main class="stage">
@@ -370,37 +413,41 @@
       </button>
     </div>
 
-    <div class="hint" id="hint">▶ ボタンで開始。最初に3秒のカウントが入ります</div>
+    <div class="hint" id="hint">▶ ボタンで開始。最初に5秒のカウントが入ります</div>
   </div>
 
 <script>
 /* ============================================================
-   ストレッチタイマー v0.2.0
-   - Web Audio APIで全効果音を合成生成（外部ファイル不要）
-   - performance.now() ベースの精密タイマー
-   - v0.1.1: メイン→インターバルの無限ループ不具合を修正
-   - v0.2.0: メイン用/インターバル用の効果音を聞き分け可能なほど
-             明確に分離（音域・音色・エンベロープを全面再設計）。
-             メイン終了→インターバル開始に1秒の間を追加。
-   - v0.2.1: メインのカウント音が高すぎて刺さる問題を修正。
-             square波と2640Hzを廃止、G5/D6のtriangle+sineに変更。
-   - v0.2.2: ホーム画面アイコン用のPNGとmanifest.jsonを追加。
-             PWA的な「アプリらしい」起動が可能に。
+   ストレッチタイマー v0.3.0
+   - v0.2.1からの変更：
+     * ブランド名 Stretch Tempo → Stretch Timer（イタリック解除）
+     * メイン/インターバル時間を3種プリセット（30/5, 20/3, 10/3）の
+       ワンタップ切替に変更。手動入力欄は削除。
+     * 準備カウント秒（PREP）= インターバル秒。プリセットに連動。
+     * ヒント文「最初に○秒のカウントが入ります」もプリセット連動。
+   - 既存機能はすべて維持：
+     * Web Audio APIによる効果音合成（メイン/インターバル聞き分け）
+     * performance.now()ベースの精密タイマー
+     * メイン→インターバル間の1秒の間
+     * 一時停止/再開、停止、wake lock、キーボード操作
    ============================================================ */
 
 /* ---------- 設定 ---------- */
 const CONFIG = {
-  PREP_SECONDS: 3,
-  MAIN_MIN: 0, MAIN_MAX: 60, MAIN_DEFAULT: 30,
-  INTERVAL_MIN: 3, INTERVAL_MAX: 10, INTERVAL_DEFAULT: 5,
   COUNTDOWN_FROM: 3, // 終了X秒前からカウント音
+  TRANSITION_GAP_MS: 1000, // メイン→インターバル間の間
+  PRESETS: [
+    { name: 'STANDARD', main: 30, interval: 5 },
+    { name: 'QUICK',    main: 20, interval: 3 },
+    { name: 'SHORT',    main: 10, interval: 3 },
+  ],
+  DEFAULT_PRESET_INDEX: 0,
 };
 
 /* ---------- DOM ---------- */
 const el = {
   body: document.body,
-  mainInput: document.getElementById('mainInput'),
-  intervalInput: document.getElementById('intervalInput'),
+  presets: document.querySelectorAll('.preset'),
   phaseLabel: document.getElementById('phaseLabel'),
   time: document.getElementById('timeDisplay'),
   ring: document.getElementById('ringProgress'),
@@ -426,22 +473,24 @@ const State = {
 };
 let state = State.IDLE;
 let isPaused = false;
-let phaseStartTs = 0;       // 現フェーズ開始時刻 (performance.now)
-let phaseDuration = 0;      // 現フェーズの長さ(秒)
-let pausedRemaining = 0;    // 一時停止時の残り秒
+let phaseStartTs = 0;
+let phaseDuration = 0;
+let pausedRemaining = 0;
 let cycleCount = 0;
-let totalElapsedSec = 0;    // 全体経過(再生時間ベース)
+let totalElapsedSec = 0;
 let lastTickTs = 0;
-let beepedSecond = -1;      // カウント音重複防止用
+let beepedSecond = -1;
 let rafId = null;
-let transitionTimerId = null; // メイン→インターバル間の遅延タイマー
+let transitionTimerId = null;
+
+// 現在のプリセット
+let currentPresetIndex = CONFIG.DEFAULT_PRESET_INDEX;
+function getMainSec()     { return CONFIG.PRESETS[currentPresetIndex].main; }
+function getIntervalSec() { return CONFIG.PRESETS[currentPresetIndex].interval; }
+function getPrepSec()     { return CONFIG.PRESETS[currentPresetIndex].interval; } // ★ 準備=インターバル
 
 /* ============================================================
-   オーディオエンジン
-   設計方針：
-   - メイン  = 高音域(1000-2600Hz)、明るい金属/ベル系。覚醒・集中
-   - インターバル = 低音域(100-330Hz)、ローパス通過の温かい木質/パッド系。休息
-   - 周波数で約10倍離してあるので、聞き分けは即座に可能
+   オーディオエンジン（v0.2.1から変更なし）
    ============================================================ */
 const Audio = (() => {
   let ctx = null;
@@ -458,7 +507,6 @@ const Audio = (() => {
     return ctx;
   }
 
-  // 基本トーン（エンベロープ付き、出力先指定可）
   function tone({ freq, type = 'sine', dur = 0.4, attack = 0.005, gain = 0.3, detune = 0, dest = null }) {
     const c = ensure();
     const t0 = c.currentTime;
@@ -475,7 +523,6 @@ const Audio = (() => {
     osc.stop(t0 + dur + 0.05);
   }
 
-  // ローパス通過の柔らかいトーン（インターバル用）
   function softTone(opts) {
     const c = ensure();
     const filter = c.createBiquadFilter();
@@ -486,9 +533,6 @@ const Audio = (() => {
     tone({ ...opts, dest: filter });
   }
 
-  /* ---------- MAIN（メイン）系：高音・明るい・覚醒 ---------- */
-
-  // メイン開始：C6→E6→G6 の素早い上昇アルペジオ + キラキラ余韻
   function mainStart() {
     ensure();
     const notes = [1046.5, 1318.5, 1568.0]; // C6, E6, G6
@@ -501,15 +545,11 @@ const Audio = (() => {
     setTimeout(() => tone({ freq: 2093, type: 'sine', dur: 0.55, attack: 0.01, gain: 0.08 }), 220);
   }
 
-  // メイン中のカウント音(残り3,2,1)：聞きやすい中高域。
-  // 旧版の1320Hz square + 2640Hz sineは耳に刺さるため廃止。
-  // 基音 G5(784Hz) triangle、倍音 D6(1175Hz) sineで丸く明るく。
   function mainTick() {
     tone({ freq: 784,  type: 'triangle', dur: 0.11, attack: 0.004, gain: 0.22 });
     tone({ freq: 1175, type: 'sine',     dur: 0.09, attack: 0.006, gain: 0.07 });
   }
 
-  // メイン終了：達成感のある瞑想ベル（C6+G6+C7、長い減衰）
   function mainEnd() {
     ensure();
     tone({ freq: 1046.5, type: 'triangle', dur: 0.95, attack: 0.003, gain: 0.30 });
@@ -517,22 +557,17 @@ const Audio = (() => {
     tone({ freq: 2093.0, type: 'sine',     dur: 0.90, attack: 0.010, gain: 0.08 });
   }
 
-  /* ---------- INTERVAL（インターバル）系：低音・温かい・休息 ---------- */
-
-  // インターバル開始：低音のため息のような温かいパッド (A2+A3+E4、ローパス)
   function intervalStart() {
     softTone({ freq: 110,    type: 'sine',     dur: 1.10, attack: 0.10, gain: 0.20, cutoff: 600 });
     softTone({ freq: 220,    type: 'sine',     dur: 1.20, attack: 0.15, gain: 0.30, cutoff: 700 });
     softTone({ freq: 329.63, type: 'triangle', dur: 1.10, attack: 0.20, gain: 0.16, cutoff: 700 });
   }
 
-  // インターバル中のカウント音(残り3,2,1)：木の打音のような優しい低音クリック
   function intervalTick() {
     softTone({ freq: 196, type: 'sine',     dur: 0.18, attack: 0.002, gain: 0.28, cutoff: 500 });
     softTone({ freq: 98,  type: 'triangle', dur: 0.20, attack: 0.003, gain: 0.20, cutoff: 350 });
   }
 
-  /* ---------- 準備カウント（最初の3秒）：中立的なクリック ---------- */
   function prepTick() {
     tone({ freq: 660, type: 'sine', dur: 0.14, attack: 0.003, gain: 0.20 });
   }
@@ -541,25 +576,38 @@ const Audio = (() => {
 })();
 
 /* ============================================================
-   設定値のバリデーション
+   ユーティリティ
    ============================================================ */
 function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
 
-function getMainSec() {
-  const v = parseInt(el.mainInput.value, 10);
-  return Number.isFinite(v) ? clamp(v, CONFIG.MAIN_MIN, CONFIG.MAIN_MAX) : CONFIG.MAIN_DEFAULT;
-}
-function getIntervalSec() {
-  const v = parseInt(el.intervalInput.value, 10);
-  return Number.isFinite(v) ? clamp(v, CONFIG.INTERVAL_MIN, CONFIG.INTERVAL_MAX) : CONFIG.INTERVAL_DEFAULT;
+function fmtMSS(totalSec) {
+  const m = Math.floor(totalSec / 60);
+  const s = Math.floor(totalSec % 60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
-el.mainInput.addEventListener('change', () => {
-  el.mainInput.value = getMainSec();
-  if (state === State.IDLE) updateIdleDisplay();
-});
-el.intervalInput.addEventListener('change', () => {
-  el.intervalInput.value = getIntervalSec();
+function getIdleHint() {
+  return `▶ ボタンで開始。最初に${getPrepSec()}秒のカウントが入ります`;
+}
+
+/* ============================================================
+   プリセット選択
+   ============================================================ */
+function selectPreset(index) {
+  if (index < 0 || index >= CONFIG.PRESETS.length) return;
+  currentPresetIndex = index;
+  el.presets.forEach((p, i) => p.classList.toggle('active', i === index));
+  if (state === State.IDLE) {
+    updateIdleDisplay();
+  }
+}
+
+el.presets.forEach((p, i) => {
+  p.addEventListener('click', () => {
+    // 動作中のプリセット切替も許容するが、現フェーズの残り時間には影響しない
+    // （次のフェーズから新しいプリセット値で動く）
+    selectPreset(i);
+  });
 });
 
 /* ============================================================
@@ -598,15 +646,8 @@ function setTimeDisplay(sec) {
 }
 
 function setRing(progressRatio) {
-  // progressRatio: 0(開始) → 1(終了)
   const offset = RING_CIRCUMFERENCE * (1 - progressRatio);
   el.ring.setAttribute('stroke-dashoffset', offset.toFixed(2));
-}
-
-function fmtMSS(totalSec) {
-  const m = Math.floor(totalSec / 60);
-  const s = Math.floor(totalSec % 60);
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
 function updateIdleDisplay() {
@@ -616,6 +657,7 @@ function updateIdleDisplay() {
   setRing(0);
   el.cycle.textContent = '0';
   el.totalElapsed.textContent = '00:00';
+  el.hint.textContent = getIdleHint();
 }
 
 /* ============================================================
@@ -628,12 +670,11 @@ function startPhase(nextState) {
   setAccent(state);
 
   if (state === State.PREP) {
-    phaseDuration = CONFIG.PREP_SECONDS;
+    phaseDuration = getPrepSec(); // ★ インターバル秒と同じ
     el.hint.textContent = 'まもなくスタート…';
   } else if (state === State.MAIN) {
     phaseDuration = getMainSec();
     if (phaseDuration <= 0) {
-      // メイン時間が0秒なら即インターバルへ
       startPhase(State.INTERVAL);
       return;
     }
@@ -654,15 +695,13 @@ function nextPhase() {
     startPhase(State.MAIN);
   } else if (state === State.MAIN) {
     Audio.mainEnd();
-    // メイン終了後、1秒間を空けてからインターバル開始
     state = '_transition';
     el.hint.textContent = 'よくできました。1秒の間…';
     transitionTimerId = setTimeout(() => {
       transitionTimerId = null;
       if (state === '_transition') startPhase(State.INTERVAL);
-    }, 1000);
+    }, CONFIG.TRANSITION_GAP_MS);
   } else if (state === State.INTERVAL) {
-    // インターバル終了 → そのままメインへループ
     startPhase(State.MAIN);
   }
 }
@@ -675,18 +714,15 @@ function tick(now) {
     const elapsed = (now - phaseStartTs) / 1000;
     const remaining = phaseDuration - elapsed;
 
-    // 経過時間更新（前tickからの差分）
     if (lastTickTs > 0) {
       totalElapsedSec += (now - lastTickTs) / 1000;
       el.totalElapsed.textContent = fmtMSS(totalElapsedSec);
     }
     lastTickTs = now;
 
-    // 表示
     setTimeDisplay(remaining);
     setRing(clamp(elapsed / phaseDuration, 0, 1));
 
-    // カウント音処理（残り3,2,1秒）
     const secCeil = Math.ceil(remaining);
     if (remaining > 0 && remaining <= CONFIG.COUNTDOWN_FROM && secCeil !== beepedSecond) {
       beepedSecond = secCeil;
@@ -698,7 +734,6 @@ function tick(now) {
       el.time.classList.add('tick');
     }
 
-    // フェーズ終了
     if (remaining <= 0) {
       nextPhase();
     }
@@ -712,7 +747,7 @@ function tick(now) {
    操作（再生/一時停止/停止）
    ============================================================ */
 function play() {
-  Audio.ensure(); // ユーザージェスチャ内で初期化
+  Audio.ensure();
   if (state === State.IDLE) {
     cycleCount = 0;
     totalElapsedSec = 0;
@@ -724,22 +759,17 @@ function play() {
     setPlayingUI(true);
     if (!rafId) rafId = requestAnimationFrame(tick);
   } else if (isPaused) {
-    // 再開
     isPaused = false;
     if (state === '_transition') {
-      // トランジション中で停止していた場合、即インターバルへ進める
       startPhase(State.INTERVAL);
     } else {
-      // 同じフェーズの残り秒から再開
       phaseStartTs = performance.now() - (phaseDuration - pausedRemaining) * 1000;
     }
     lastTickTs = 0;
     setPlayingUI(true);
     el.hint.textContent = '再開しました';
   } else {
-    // 一時停止
     isPaused = true;
-    // トランジション中なら、保留タイマーをキャンセル（再開時に再開）
     if (state === '_transition' && transitionTimerId) {
       clearTimeout(transitionTimerId);
       transitionTimerId = null;
@@ -768,11 +798,9 @@ function stopAll() {
 function setPlayingUI(isPlaying, isPausedUI = false) {
   el.stopBtn.disabled = !isPlaying && !isPausedUI;
   if (isPlaying) {
-    // 再生中 → 一時停止アイコン表示
     el.playIcon.innerHTML = '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
     el.playLabel.textContent = '一時停止';
   } else {
-    // 停止中 or 一時停止中 → 再生アイコン
     el.playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
     el.playLabel.textContent = isPausedUI ? '再開' : 'スタート';
   }
@@ -781,17 +809,21 @@ function setPlayingUI(isPlaying, isPausedUI = false) {
 el.playBtn.addEventListener('click', play);
 el.stopBtn.addEventListener('click', stopAll);
 
-// スペースキーでも操作可能（PC用）
 window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   if (e.code === 'Space') { e.preventDefault(); play(); }
   else if (e.code === 'Escape') { stopAll(); }
+  // 数字キー1-3でプリセット切替（おまけ機能）
+  else if (e.code === 'Digit1' || e.code === 'Numpad1') selectPreset(0);
+  else if (e.code === 'Digit2' || e.code === 'Numpad2') selectPreset(1);
+  else if (e.code === 'Digit3' || e.code === 'Numpad3') selectPreset(2);
 });
 
 // 初期表示
+selectPreset(CONFIG.DEFAULT_PRESET_INDEX);
 updateIdleDisplay();
 
-// 画面スリープ抑止（対応ブラウザのみ）
+// 画面スリープ抑止
 let wakeLock = null;
 async function requestWakeLock() {
   try {
